@@ -21,8 +21,8 @@ from matplotlib.colors import ListedColormap
 
 matplotlib.use('Agg') # TkAgg
 import seaborn as sns
-from dtale.views import startup
-from autoviz.AutoViz_Class import AutoViz_Class
+# from dtale.views import startup
+# from autoviz.AutoViz_Class import AutoViz_Class
 from IPython import get_ipython
 
 #machine learning 
