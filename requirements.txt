@@ -1,7 +1,5 @@
 streamlit
 sklearn
-matpolib
-pandas
 seaborn
 xgboost
 
