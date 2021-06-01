@@ -28,12 +28,15 @@ from IPython import get_ipython
 #machine learning 
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import BayesianRidge
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.neural_network import MLPRegressor
+from sklearn.neighbors import KNeighborsRegressor,KNeighborsClassifier
+from sklearn.neural_network import MLPRegressor,MLPClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVR
-from sklearn.ensemble import StackingRegressor
+from sklearn.svm import SVR,SVC
+from sklearn.ensemble import StackingRegressor,StackingClassifier
 from sklearn.linear_model import Ridge
+from xgboost import XGBRegressor,XGBClassifier
+from sklearn.ensemble import ExtraTreesRegressor,ExtraTreesClassifier
+
 
 #metrics
 from sklearn.metrics import mean_squared_error
@@ -314,6 +317,7 @@ def main():
                   st.write(y_test)
               clicked = st.button('Compute RIDGE!',key="ridge")
               if clicked:
+      
                   reg=Ridge(random_state=123)
                   reg.fit(X_train, y_train)
     
@@ -374,13 +378,140 @@ def main():
                   ax1.legend()
                   plt.tight_layout()
                   st.pyplot(figreg)
+                  
+                  
+              clicked1 = st.button('Compute Xgboost!',key="Xgboost")
+              if clicked1:
+                  reg=XGBRegressor()
+
+                  reg.fit(X_train, y_train)
+    
+    
+                  y_predtrain1=reg.predict(X_train)
+                  y_predtest1=reg.predict(X_test)
+    
+    
+    
+                  Rtrain=r2_score(y_train,y_predtrain1)
+                  Rtest=r2_score(y_test,y_predtest1)
+                
+                  Mse_train = mean_squared_error(y_train,y_predtrain1)
+                  Msetest=mean_squared_error(y_test,y_predtest1)
+                  Result={"RCalib":Rtrain,"RPred":Rtest,
+                          "MseCalib":Mse_train,"MsePred":Msetest}
+                  st.write("The result of the prediction",Result)
+                  
+    
+                  figridg,aridg =plt.subplots()
+                  aridg.scatter(y_test, y_predtest1,label='MSEP {}'.format(Msetest))
+                # plt.plot([y_train.min(), y_train.max()], [y_predtrain1.min(), y_predtrain1.max()], color='blue')
+                  aridg.plot([y_train.min(), y_train.max()], [y_train.min(), y_train.max()],'b-', linewidth=2, markersize=1,label="Best fit" )
+                
+                # plt.plot([y_test.min(), y_test.max()], [y_predtest1.min(), y_predtest1.max()], color='red')
+                  aridg.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='k', marker='o', linestyle='dotted',linewidth=1,
+                         markersize=1, label="Identity")
+                  aridg.set_xlabel("True value")
+                  aridg.set_ylabel("Predicted value")
+                  # aridg.title("Prediction error plot")
+                  aridg.legend()
+                  
+                  st.pyplot(figridg)
+    
+                  residualstest=-(y_predtest1.ravel()-y_test.ravel())
+                  residualstrain=-(y_predtrain1.ravel()-y_train.ravel())
+                  figreg = plt.figure(dpi=1200)
+                # ax = fig.add_subplot(1,2,1)
+                  ax = plt.subplot2grid((1, 3), (0, 0), colspan=2)
+                
+                  ax.scatter(y_predtest1.ravel(),residualstest.ravel(), color='b',label='MSEP {}'.format(Msetest))
+                  ax.scatter(y_predtrain1.ravel(),residualstrain.ravel(),marker='*', color='r',label='MSEC {}'.format(Mse_train))
+                  ax.axhline(y=0, color='k', linestyle='-')
+                  ax.legend()
+                
+                  ax.set_xlabel("Predicted value")
+                  ax.set_ylabel("Residuals")
+                # mode 01 from other case
+                # fig1 = plt.figure()
+                # ax1=plt.subplot2grid((2, 1), (0, 0), rowspan=2, colspan=1).
+                  ax1 = plt.subplot2grid((1, 3), (0, 2))
+                
+                # ax1 = fig.add_subplot(2,3,3)
+                  ax1.hist(residualstrain, bins=10, color="red",label="Calibration",orientation='horizontal')
+                  ax1.hist(residualstest, bins=10, color="b",label="Prediction",orientation='horizontal')
+                  ax1.set_xlabel("Distribution")
+    
+                  ax1.legend()
+                  plt.tight_layout()
+                  st.pyplot(figreg)
+              clicked2 = st.button('Compute ExtraTreesRegressor!',key="ExtraTreesRegressor")
+              if clicked2:
+                  reg=ExtraTreesRegressor()
+
+                  reg.fit(X_train, y_train)
+    
+    
+                  y_predtrain1=reg.predict(X_train)
+                  y_predtest1=reg.predict(X_test)
+    
+    
+    
+                  Rtrain=r2_score(y_train,y_predtrain1)
+                  Rtest=r2_score(y_test,y_predtest1)
+                
+                  Mse_train = mean_squared_error(y_train,y_predtrain1)
+                  Msetest=mean_squared_error(y_test,y_predtest1)
+                  Result={"RCalib":Rtrain,"RPred":Rtest,
+                          "MseCalib":Mse_train,"MsePred":Msetest}
+                  st.write("The result of the prediction",Result)
+                  
+    
+                  figridg,aridg =plt.subplots()
+                  aridg.scatter(y_test, y_predtest1,label='MSEP {}'.format(Msetest))
+                # plt.plot([y_train.min(), y_train.max()], [y_predtrain1.min(), y_predtrain1.max()], color='blue')
+                  aridg.plot([y_train.min(), y_train.max()], [y_train.min(), y_train.max()],'b-', linewidth=2, markersize=1,label="Best fit" )
+                
+                # plt.plot([y_test.min(), y_test.max()], [y_predtest1.min(), y_predtest1.max()], color='red')
+                  aridg.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='k', marker='o', linestyle='dotted',linewidth=1,
+                         markersize=1, label="Identity")
+                  aridg.set_xlabel("True value")
+                  aridg.set_ylabel("Predicted value")
+                  # aridg.title("Prediction error plot")
+                  aridg.legend()
+                  
+                  st.pyplot(figridg)
+    
+                  residualstest=-(y_predtest1.ravel()-y_test.ravel())
+                  residualstrain=-(y_predtrain1.ravel()-y_train.ravel())
+                  figreg = plt.figure(dpi=1200)
+                # ax = fig.add_subplot(1,2,1)
+                  ax = plt.subplot2grid((1, 3), (0, 0), colspan=2)
+                
+                  ax.scatter(y_predtest1.ravel(),residualstest.ravel(), color='b',label='MSEP {}'.format(Msetest))
+                  ax.scatter(y_predtrain1.ravel(),residualstrain.ravel(),marker='*', color='r',label='MSEC {}'.format(Mse_train))
+                  ax.axhline(y=0, color='k', linestyle='-')
+                  ax.legend()
+                
+                  ax.set_xlabel("Predicted value")
+                  ax.set_ylabel("Residuals")
+                # mode 01 from other case
+                # fig1 = plt.figure()
+                # ax1=plt.subplot2grid((2, 1), (0, 0), rowspan=2, colspan=1).
+                  ax1 = plt.subplot2grid((1, 3), (0, 2))
+                
+                # ax1 = fig.add_subplot(2,3,3)
+                  ax1.hist(residualstrain, bins=10, color="red",label="Calibration",orientation='horizontal')
+                  ax1.hist(residualstest, bins=10, color="b",label="Prediction",orientation='horizontal')
+                  ax1.set_xlabel("Distribution")
+    
+                  ax1.legend()
+                  plt.tight_layout()
+                  st.pyplot(figreg)    
     if choice == "About":
         st.subheader("This APP  has been fully made by MAHAMED lAMINE GUINDO STUDENT IN ZJU ")
         st.write("I was tired to repeat the same process when dealing with chemometrics data then i decide to just make the process automatic.")
         st.text(" Moreover, i was tired using my own desktop to compute the huge data now you can even process the data using a simple phone")
 
            
-
 
               
 
