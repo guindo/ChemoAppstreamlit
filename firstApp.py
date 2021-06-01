@@ -88,7 +88,7 @@ class FileDownloader(object):
 		href = f'<a href="data:file/{self.file_ext};base64,{b64}" download="{new_filename}">Click Here!!</a>'
 		st.markdown(href,unsafe_allow_html=True)
 
-
+st.title("Hello Rita thank you")
 
 data_file = st.file_uploader("independant")
         
