@@ -507,7 +507,7 @@ def main():
                   st.pyplot(figreg)    
     if choice == "About":
         st.subheader("More features are coming soon stay tune ...just beginning ")
-	 st.subheader("This APP  has been fully made by GUINDO  ")
+	st.subheader("This APP  has been fully made by GUINDO  ")
         st.write("I was tired to repeat the same process when dealing with chemometrics data then i decide to just make the process automatic.")
         st.text(" Moreover, i was tired using my own desktop to compute the huge data now you can even process the data using a simple phone")
 
