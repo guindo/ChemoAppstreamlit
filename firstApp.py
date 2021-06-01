@@ -89,7 +89,6 @@ class FileDownloader(object):
 		st.markdown(href,unsafe_allow_html=True)
 
 
-st.title('Zhejiang University:College of biosystem')
 
 data_file = st.file_uploader("independant")
         
@@ -507,10 +506,8 @@ def main():
                   plt.tight_layout()
                   st.pyplot(figreg)    
     if choice == "About":
-        st.subheader("This APP  has been fully made by MAHAMED lAMINE GUINDO STUDENT IN ZJU ")
-        st.write("I was tired to repeat the same process when dealing with chemometrics data then i decide to just make the process automatic.")
-        st.text(" Moreover, i was tired using my own desktop to compute the huge data now you can even process the data using a simple phone")
-
+        st.subheader("More features are coming soon stay tune ...just beginning ")
+       
            
 
               
