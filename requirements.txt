@@ -1,0 +1,6 @@
+streamlit
+sklearn
+matpolib
+pandas
+seaborn
+
