@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.colors import ListedColormap
+from sklearn.metrics import plot_confusion_matrix
 
 matplotlib.use('Agg') # TkAgg
 import seaborn as sns
@@ -41,6 +42,9 @@ from sklearn.ensemble import ExtraTreesRegressor,ExtraTreesClassifier
 #metrics
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import confusion_matrix
 
 #download
 import base64 
@@ -88,7 +92,8 @@ class FileDownloader(object):
 		href = f'<a href="data:file/{self.file_ext};base64,{b64}" download="{new_filename}">Click Here!!</a>'
 		st.markdown(href,unsafe_allow_html=True)
 
-st.title("Hello thank you it's just a demo APP")
+
+st.title('Zhejiang University:College of biosystem')
 
 data_file = st.file_uploader("independant")
         
@@ -300,6 +305,7 @@ def main():
             
           # if st.button("plot PC",key="Plopc"):
        if choice == "Regression":
+           
            X=df.values
            y=df2.values
            if st.checkbox("spit the data",key='split'):
@@ -505,12 +511,140 @@ def main():
                   ax1.legend()
                   plt.tight_layout()
                   st.pyplot(figreg)    
+       if choice == "Classification":
+           X=df.values
+           y=df3.values
+           if st.checkbox("spit the data",key='split'):
+              test_size= st.number_input("how many percent of the data you want use for test set",0.0,0.9,0.2,key="test_size")
+
+              X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = test_size, random_state = 1)
+              if st.checkbox("calibration X",key='X_trainsvm'):
+                  st.write(X_train)
+              if st.checkbox("calibration y",key='y_trainsvm'):
+                  st.write(y_train)
+              if st.checkbox("validation X",key='X_testsvm'):
+                  st.write(X_test)
+              if st.checkbox("validation y",key='y_testsvm'):
+                  st.write(y_test)
+              clickedsvm = st.button('Compute SVM!',key="svm")
+              if clickedsvm:
+      
+                  clf=SVC(random_state=0)
+                  clf.fit(X_train, y_train)
+    
+    
+                  y_predtrain1=clf.predict(X_train)
+                  y_predtest1=clf.predict(X_test)
+    
+    
+    
+                  Acctrain=accuracy_score(y_train,y_predtrain1)
+                  Acctest=accuracy_score(y_test,y_predtest1)
+
+                  # RecallTrain=precision_recall_curve(y_train,y_predtrain1)
+
+                  # RecallTest=precision_recall_curve(y_test,y_predtest1)
+                  Result={"Calib_accuracy":Acctrain,"Pred_accuracy":Acctest
+                          }
+                  st.write(Result)
+                  figsvm = plt.figure(dpi=1200)
+                  
+                  conf_matrix_pred = confusion_matrix(y_test,y_predtest1)
+                  conf_matrix_cal = confusion_matrix(y_train,y_predtrain1)
+                  st.subheader("Coonfusion for prediction set")
+
+                  sns.heatmap(conf_matrix_pred, annot=True)
+                  # st.subheader("Coonfusion for calibration set")
+
+                  # sns.heatmap(conf_matrix_cal, annot=True)
+
+                  # sns.heatmap(conf_matrix , annot=True , xticklabels=['Normal' , 'Legendary'] , yticklabels=['Normal' , 'Legendary'])
+                  plt.ylabel("True")
+                  plt.xlabel("Predicted")
+                  # plot_confusion_matrix(clf, X_test, y_predtest1) 
+                  st.pyplot(figsvm)
+                  
+
+              clickedxgb = st.button('Compute xgboost!',key="xgb")
+              if clickedxgb:
+      
+                  clf=XGBClassifier(random_state=0)
+                  clf.fit(X_train, y_train)
+    
+    
+                  y_predtrain1=clf.predict(X_train)
+                  y_predtest1=clf.predict(X_test)
+    
+    
+    
+                  Acctrain=accuracy_score(y_train,y_predtrain1)
+                  Acctest=accuracy_score(y_test,y_predtest1)
+
+                  # RecallTrain=precision_recall_curve(y_train,y_predtrain1)
+
+                  # RecallTest=precision_recall_curve(y_test,y_predtest1)
+                  Result={"Calib_accuracy":Acctrain,"Pred_accuracy":Acctest
+                          }
+                  st.write(Result)
+                  figsvm = plt.figure(dpi=1200)
+                  
+                  conf_matrix_pred = confusion_matrix(y_test,y_predtest1)
+                  conf_matrix_cal = confusion_matrix(y_train,y_predtrain1)
+                  st.subheader("Coonfusion for prediction set")
+
+                  sns.heatmap(conf_matrix_pred, annot=True)
+                  # st.subheader("Coonfusion for calibration set")
+
+                  # sns.heatmap(conf_matrix_cal, annot=True)
+
+                  # sns.heatmap(conf_matrix , annot=True , xticklabels=['Normal' , 'Legendary'] , yticklabels=['Normal' , 'Legendary'])
+                  plt.ylabel("True")
+                  plt.xlabel("Predicted")
+                  # plot_confusion_matrix(clf, X_test, y_predtest1) 
+                  st.pyplot(figsvm)  
+              clickedEXTRA = st.button('Compute ExtraTrees!',key="ExtraTrees")
+              if clickedEXTRA:
+      
+                  clf=ExtraTreesClassifier(random_state=0)
+                  clf.fit(X_train, y_train)
+    
+    
+                  y_predtrain1=clf.predict(X_train)
+                  y_predtest1=clf.predict(X_test)
+    
+    
+    
+                  Acctrain=accuracy_score(y_train,y_predtrain1)
+                  Acctest=accuracy_score(y_test,y_predtest1)
+
+                  # RecallTrain=precision_recall_curve(y_train,y_predtrain1)
+
+                  # RecallTest=precision_recall_curve(y_test,y_predtest1)
+                  Result={"Calib_accuracy":Acctrain,"Pred_accuracy":Acctest
+                          }
+                  st.write(Result)
+                  figsvm = plt.figure(dpi=1200)
+                  
+                  conf_matrix_pred = confusion_matrix(y_test,y_predtest1)
+                  conf_matrix_cal = confusion_matrix(y_train,y_predtrain1)
+                  st.subheader("Coonfusion for prediction set")
+
+                  sns.heatmap(conf_matrix_pred, annot=True)
+                  # st.subheader("Coonfusion for calibration set")
+
+                  # sns.heatmap(conf_matrix_cal, annot=True)
+
+                  # sns.heatmap(conf_matrix , annot=True , xticklabels=['Normal' , 'Legendary'] , yticklabels=['Normal' , 'Legendary'])
+                  plt.ylabel("True")
+                  plt.xlabel("Predicted")
+                  # plot_confusion_matrix(clf, X_test, y_predtest1) 
+                  st.pyplot(figsvm)      
+                  
     if choice == "About":
-        st.subheader("  This APP  has been fully made by GUINDO More features are coming soon stay tune ...just beginning ")
+        st.subheader("This APP  has been fully made by GUINDO  ")
         st.write("I was tired to repeat the same process when dealing with chemometrics data then i decide to just make the process automatic.")
         st.text(" Moreover, i was tired using my own desktop to compute the huge data now you can even process the data using a simple phone")
 
-       
            
 
               
