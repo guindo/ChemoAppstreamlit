@@ -93,7 +93,6 @@ class FileDownloader(object):
 		st.markdown(href,unsafe_allow_html=True)
 
 
-st.title('Zhejiang University:College of biosystem')
 
 data_file = st.file_uploader("independant")
         
